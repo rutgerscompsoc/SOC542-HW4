@@ -1,0 +1,209 @@
+---
+title: "SOC542 Homework 4: Count and categorical dependent variables"
+author: "Your name here"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+# This cell is here to set some options for how the output should be rendered.
+# Do not edit anything here
+# The following lines define how the output of code chunks should behave
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(include = TRUE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+
+# Packages
+library(tidyverse)
+library(knitr)
+library(stargazer)
+library(modelsummary)
+library(haven)
+library(gridExtra)
+library(performance)
+library(marginaleffects)
+library(MASS)
+library(nnet)
+library(pscl)
+library(rstanarm)
+
+set.seed(08901) # Setting seed for random number generator
+```
+
+
+## Instructions
+This assignment will cover the material on count and categorical outcome variables. It will be more open ended than the previous assignments, allowing you to put into practice the data manipulation, analysis, and visualization skills you have been learning this semester.
+
+**Please begin by adding your name to the top of the document on line 3.** Instructions for how to submit the assignment are provided at the bottom on the document. The procedure is the same as the previous assignments.
+
+Next, run the chunk above to load the relevant packages. You may need to install some of the packages before proceeding, so pay attention to any error messages in the Console.
+
+## Data
+
+You will be using the GSS for this assignment. Begin by running the cell below to load the GSS dataset.
+```{r loading, echo=FALSE, tidy=TRUE}
+# Do not modify this code
+data <- read_dta("data/GSS2018.dta")
+```
+
+
+## Questions
+
+### Part I: Count outcomes
+Q1. The task is to create a model to predict the self-reported average hours of television a respondent watches each data. This variable is named `tvhours` and has been asked most years since 1975. Here you will be analyzing the responses to the 2018 survey.
+
+Make a histogram showing the distribution of `tvhours` and answer the question below.
+```{r q1, echo=TRUE, tidy=TRUE}
+
+```
+
+Question: Describe the graph above. What does this tell us about the distribution of TV watching?
+Answer:
+
+Q2. Calculate the the mean and variance of TV hours then answer the question below. You will need to remove any missing values, otherwise the results will be undefined.
+```{r q2, echo=TRUE, tidy=TRUE}
+# Your code here
+```
+
+Question: Under what distributional assumptions might we expect the mean and variance of the distribution to be equal?
+
+Q3. The next task will be to construct a model to predict TV hours. Before specifying the model, select variables to include on the right-hand side of the equation. Select age, sex, race, and *at least three other predictors of your choice* (with a *maximum of ten independent variables including any transformations*). You may want to construct a new version of your dataset containing these variables.
+
+Perform any data cleaning necessary to make the variables suitable for regression modeling (e.g. the types of data processing implemented at the beginning of each lab or lecture).
+
+When you have finished extracting and cleaning the relevant variables, answer the question below.
+
+```{r q3, echo=TRUE, tidy=TRUE}
+# Your code here
+```
+Question: Provide a brief description of the independent variables and why they might help to predict TV watching habits. You may also want to discuss any decisions you made when preparing the data for analysis.
+Answer:
+
+
+Q4. Estimate three count models using the three approaches covered in class: Poisson, Negative Binomial, and zero-inflated Negative Binomial. An outline for the model code has been provided below. Each model should include the same set of predictor variables.
+
+Use either `stargazer` or `modelsummary` to produce a regression table displaying the output of all three models. Make sure to exponentiate the coefficients.
+
+```{r q4, echo=TRUE, tidy=TRUE}
+# Complete the models
+p.model <- glm()
+
+nb.model <- glm.nb()
+
+zi.model <- zeroinfl()
+
+# Add a table here
+
+```
+
+
+Q5. Discuss the results of the three models and any interesting patterns you observed. You should make reference to specific coefficients in your answer, but you do not need to discuss every individual coefficient.
+Answer:
+
+Q6. Let's assess the models by comparing the distributions of predicted values. Use each of the three models to predict number of hours each respondent watched television. Combine the results and use `ggplot` to create a *single density plot*, using `geom_density` showing the results. 
+
+You can overlay the density plots by specifying a `group` or use faceting to create separate sub-plots, whatever you prefer. The documentation has some examples of the former (https://ggplot2.tidyverse.org/reference/geom_density.html) and examples using faceting are easily found online.
+
+```{r q6, echo=FALSE, tidy=TRUE}
+
+```
+
+Q7. Based on this analysis, how would you rank the quality of these different models? Is there one model that appears to predict hours of TV watched better than others? Explain your reasoning.
+Answers:
+
+### Part II: Categorical outcomes
+The remainder of this assignment will focus on categorical outcomes.
+
+Q8a. Discuss the main differences between ordinal and nominal categorical variables.
+Answer:
+
+Q8b. The model for ordinal variables includes additional parameters known as "cutpoints". Explain the purpose of cutpoints and why they are useful for modeling ordinal variables.
+Answer:
+
+Q9. Select an ordinal categorical variable from the GSS to analyze. You may want to use the GSS Data Explorer: https://gssdataexplorer.norc.org/variables/vfilter (make sure to filter for the 2018 survey before searching).
+
+Once you have identified a suitable variable, use `recode_factor` to recode the categories to ensure the labels are meaningful. Produce a bar chart showing the frequency distribution using `geom_bar`.
+
+```{r q9, echo=TRUE, tidy=TRUE}
+
+```
+
+Q10. Estimate an ordered logistic regression using `polr` to predict your chosen variable. Include the same basic demographic predictors as above. You may include other predictors, but it is not required. Use `stargazer` or `modelsummary` to present the results. 
+
+```{r q10, echo=TRUE, tidy=TRUE}
+m.model <- polr() # Complete the model here
+
+# Add code to produce a table here
+```
+
+Q11. Discuss the results and interpret the coefficients for each of the demographic predictors. You can ignore the cutpoints for now.
+Answer:
+
+
+Q12. Use the model to make predictions for the data points in the provided grid. 
+
+You may need to modify the names used in the demographic columns if you have labeled them differently. This grid must contain all predictors used in the model. If you have included other predictors, add a single value to the grid with the mean of each predictor (or a suitable category for categorical predictors).
+```{r q12, echo=TRUE, tidy=TRUE}
+# Modify the grid as necessary
+newdat <- expand_grid(
+  race = c("Black", "White", "Other"),
+  sex = c("Female", "Male"),
+  age = 18:65)
+
+# Complete the predict function
+m.preds <- predict()
+```
+
+
+Q13. Use results of the previous chunk to construct a plot showing how the predicted outcome varies according to *two or more* variables of your choice. The plot should include appropriate axis labels, legend(s), and a title. Answer the question below.
+```{r q13, echo=TRUE, tidy=TRUE}
+
+```
+Question: Interpret the results in the plot. What does this tell us about the relationship between the dependent variable and your chosen predictors?
+Answer:
+
+Q14. Extract the cutpoints from the model and use the inverse logit function to transform them to the probability scale. The `invlogit` function is provided in `rstanarm`. Store the results and print the cutpoints to three significant digits.
+```{r q14, echo=TRUE, tidy=TRUE}
+
+```
+
+Q15. The line of code below extracts the fitted values from the model without incorporating the cutpoints. Using the cutpoints above, calculate the number of observations that fall into each category. You will need to use the inverse logit function to transform the fitted values to the probability scale.
+
+Once you have the counts for each category, use `geom_bar` to produce a bar chart showing the results. The documentation includes examples showing how to produce bar charts from tables of counts.
+
+Answer the question below.
+```{r q15, echo=TRUE, tidy=TRUE}
+fitted <- m.model$lp
+
+```
+Question: Compare the counts to the bar chart from Question 9. How closely do the predicted values match the distribution of the original data?
+Answer:
+
+
+## Optional extra credit
+Select a nominal categorical variable from the GSS and model it using `multinom` or using the relevant link function in `brms` if you would prefer to use a Bayesian approach. These variables are harder to find in the GSS than ordinal variables but they do exist! 
+```{r extra-credit, echo=TRUE, tidy=TRUE}
+
+```
+
+Produce a table and at least one visualization, then discuss the results below. Feel free to make more chunks as needed.
+```{r extra-credit-analysis, echo=TRUE, tidy=TRUE}
+# Code here
+```
+Discussion:
+
+# Submission instructions
+Once you have finished the assignment please complete the following steps to submit it:
+
+1. Click on the ``Knit`` menu at the top of the screen and select ``Knit to PDF``. Assuming there are no errors, this will render the RMarkdown document in a PDF. Verify that this document contains all of your answers.
+2. Add *both* this document and the PDF file to Github. Use ``Homework submitted`` as your main commit message.
+3. Push the commit to Github.
+4. Visit the Github repository in your browser and verify that the final version of both files has been correctly uploaded.
+
+If you cannot render the document to PDF then you can also try to render it as an HTML file, although a PDF is preferable. You may commit changes as many times as you need until the deadline. I encourage you to do a test commit before you commit the final version of the homework.
+
+It is possible that ``Knit`` will produce an error if you have any ``install.packages()`` calls in this document. If this happens, remove the calls. Please also avoid any unnecessary `print` or `View` calls in the final document.
+
+
